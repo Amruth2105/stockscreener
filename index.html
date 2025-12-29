@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Screener - Find Your Investment Opportunities</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: white;
+            padding: 30px 0;
+            text-align: center;
+            margin-bottom: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .filters-section {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .filters-section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .filter-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .filter-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 0.95em;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select {
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 0.95em;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+            transform: translateY(-2px);
+        }
+
+        .results-section {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .results-section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .results-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+            border-left: 4px solid #667eea;
+        }
+
+        .stat-card .value {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .stat-card .label {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table thead {
+            background: #f8f9fa;
+            border-bottom: 2px solid #667eea;
+        }
+
+        table th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #333;
+        }
+
+        table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        table tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .positive {
+            color: #28a745;
+            font-weight: 600;
+        }
+
+        .negative {
+            color: #dc3545;
+            font-weight: 600;
+        }
+
+        .neutral {
+            color: #6c757d;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+
+        .no-results p {
+            font-size: 1.1em;
+        }
+
+        .methodology-section {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .methodology-section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .methodology-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .methodology-card {
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+
+        .methodology-card h3 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .methodology-card p {
+            color: #666;
+            line-height: 1.6;
+            font-size: 0.95em;
+        }
+
+        .methodology-card ul {
+            color: #666;
+            line-height: 1.8;
+            margin-left: 20px;
+            font-size: 0.95em;
+        }
+
+        .methodology-card li {
+            margin-bottom: 8px;
+        }
+
+        footer {
+            text-align: center;
+            color: white;
+            padding: 20px;
+            margin-top: 30px;
+        }
+
+        footer p {
+            font-size: 0.9em;
+        }
+
+        .disclaimer {
+            background: rgba(255, 193, 7, 0.1);
+            border: 1px solid #ffc107;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 20px;
+            color: #333;
+            font-size: 0.9em;
+        }
+
+        .disclaimer strong {
+            color: #ff9800;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .filter-group {
+                grid-template-columns: 1fr;
+            }
+
+            table {
+                font-size: 0.9em;
+            }
+
+            table th,
+            table td {
+                padding: 8px;
+            }
+
+            .methodology-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <h1>📈 Stock Screener</h1>
+            <p>Find promising investment opportunities based on fundamental analysis</p>
+        </header>
+
+        <!-- Filters Section -->
+        <section class="filters-section">
+            <h2>Filter Criteria</h2>
+            
+            <div class="filter-group">
+                <div class="filter-item">
+                    <label for="ticker">Ticker Symbol</label>
+                    <input type="text" id="ticker" placeholder="e.g., AAPL, MSFT" maxlength="5">
+                </div>
+
+                <div class="filter-item">
+                    <label for="sector">Sector</label>
+                    <select id="sector">
+                        <option value="">All Sectors</option>
+                        <option value="Technology">Technology</option>
+                        <option value="Healthcare">Healthcare</option>
+                        <option value="Finance">Finance</option>
+                        <option value="Energy">Energy</option>
+                        <option value="Consumer">Consumer Discretionary</option>
+                        <option value="Industrial">Industrial</option>
+                        <option value="Materials">Materials</option>
+                        <option value="Utilities">Utilities</option>
+                        <option value="Real Estate">Real Estate</option>
+                        <option value="Communication">Communication Services</option>
+                    </select>
+                </div>
+
+                <div class="filter-item">
+                    <label for="pe-min">P/E Ratio (Min)</label>
+                    <input type="number" id="pe-min" placeholder="e.g., 10" min="0" max="1000">
+                </div>
+
+                <div class="filter-item">
+                    <label for="pe-max">P/E Ratio (Max)</label>
+                    <input type="number" id="pe-max" placeholder="e.g., 30" min="0" max="1000">
+                </div>
+
+                <div class="filter-item">
+                    <label for="pb-min">P/B Ratio (Min)</label>
+                    <input type="number" id="pb-min" placeholder="e.g., 0.5" min="0" max="100" step="0.1">
+                </div>
+
+                <div class="filter-item">
+                    <label for="pb-max">P/B Ratio (Max)</label>
+                    <input type="number" id="pb-max" placeholder="e.g., 3" min="0" max="100" step="0.1">
+                </div>
+
+                <div class="filter-item">
+                    <label for="dividend-min">Dividend Yield (Min %)</label>
+                    <input type="number" id="dividend-min" placeholder="e.g., 2" min="0" max="20" step="0.1">
+                </div>
+
+                <div class="filter-item">
+                    <label for="roe-min">ROE (Min %)</label>
+                    <input type="number" id="roe-min" placeholder="e.g., 10" min="0" max="100" step="0.1">
+                </div>
+
+                <div class="filter-item">
+                    <label for="debt-max">Debt to Equity (Max)</label>
+                    <input type="number" id="debt-max" placeholder="e.g., 1.5" min="0" max="10" step="0.1">
+                </div>
+
+                <div class="filter-item">
+                    <label for="market-cap">Market Cap Range</label>
+                    <select id="market-cap">
+                        <option value="">All</option>
+                        <option value="micro">Micro Cap (&lt; $300M)</option>
+                        <option value="small">Small Cap ($300M - $2B)</option>
+                        <option value="mid">Mid Cap ($2B - $10B)</option>
+                        <option value="large">Large Cap ($10B - $100B)</option>
+                        <option value="mega">Mega Cap (&gt; $100B)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button class="btn-primary" onclick="applyFilters()">🔍 Search Stocks</button>
+                <button class="btn-secondary" onclick="resetFilters()">↺ Reset Filters</button>
+            </div>
+        </section>
+
+        <!-- Results Section -->
+        <section class="results-section">
+            <h2>Results</h2>
+
+            <div class="results-stats">
+                <div class="stat-card">
+                    <div class="value" id="result-count">0</div>
+                    <div class="label">Stocks Found</div>
+                </div>
+                <div class="stat-card">
+                    <div class="value" id="avg-pe">—</div>
+                    <div class="label">Avg P/E Ratio</div>
+                </div>
+                <div class="stat-card">
+                    <div class="value" id="avg-dividend">—</div>
+                    <div class="label">Avg Dividend Yield</div>
+                </div>
+                <div class="stat-card">
+                    <div class="value" id="avg-roe">—</div>
+                    <div class="label">Avg ROE</div>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table id="results-table">
+                    <thead>
+                        <tr>
+                            <th>Ticker</th>
+                            <th>Company Name</th>
+                            <th>Sector</th>
+                            <th>Price</th>
+                            <th>Market Cap</th>
+                            <th>P/E Ratio</th>
+                            <th>P/B Ratio</th>
+                            <th>Dividend Yield</th>
+                            <th>ROE (%)</th>
+                            <th>Debt/Equity</th>
+                            <th>52W Change</th>
+                        </tr>
+                    </thead>
+                    <tbody id="results-body">
+                        <tr>
+                            <td colspan="11" class="no-results">
+                                <p>👇 Apply filters and click "Search Stocks" to view results</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Methodology Section -->
+        <section class="methodology-section">
+            <h2>Screening Methodology</h2>
+
+            <div class="methodology-content">
+                <div class="methodology-card">
+                    <h3>💰 Valuation Metrics</h3>
+                    <p>We analyze key valuation ratios to identify undervalued stocks:</p>
+                    <ul>
+                        <li><strong>P/E Ratio:</strong> Price relative to earnings. Lower values may indicate undervaluation.</li>
+                        <li><strong>P/B Ratio:</strong> Price relative to book value. Useful for assessing asset value.</li>
+                        <li><strong>PEG Ratio:</strong> P/E relative to growth rate for growth perspective.</li>
+                    </ul>
+                </div>
+
+                <div class="methodology-card">
+                    <h3>📊 Financial Health</h3>
+                    <p>We evaluate the financial strength and profitability of companies:</p>
+                    <ul>
+                        <li><strong>ROE (Return on Equity):</strong> Measures how effectively the company generates profits from shareholder equity.</li>
+                        <li><strong>Debt/Equity Ratio:</strong> Indicates financial leverage and risk level.</li>
+                        <li><strong>Current Ratio:</strong> Assesses short-term liquidity and ability to pay obligations.</li>
+                    </ul>
+                </div>
+
+                <div class="methodology-card">
+                    <h3>🎯 Income & Growth</h3>
+                    <p>We look for sustainable income and growth characteristics:</p>
+                    <ul>
+                        <li><strong>Dividend Yield:</strong> Annual dividend payout as percentage of stock price.</li>
+                        <li><strong>Earnings Growth:</strong> Year-over-year and multi-year revenue/earnings trends.</li>
+                        <li><strong>Free Cash Flow:</strong> Cash available after capital expenditures for distribution.</li>
+                    </ul>
+                </div>
+
+                <div class="methodology-card">
+                    <h3>🏢 Market & Sector Analysis</h3>
+                    <p>Contextual factors for comprehensive evaluation:</p>
+                    <ul>
+                        <li><strong>Market Cap Segmentation:</strong> Categories from micro to mega cap stocks.</li>
+                        <li><strong>Sector Performance:</strong> Relative strength within industry peers.</li>
+                        <li><strong>52-Week Performance:</strong> Recent price movement indicating momentum or recovery.</li>
+                    </ul>
+                </div>
+
+                <div class="methodology-card">
+                    <h3>⚠️ Risk Assessment</h3>
+                    <p>Understanding potential risks in investment selection:</p>
+                    <ul>
+                        <li><strong>Volatility:</strong> Stock price fluctuation as measure of risk.</li>
+                        <li><strong>Beta:</strong> Sensitivity to market movements (Beta > 1 = more volatile).</li>
+                        <li><strong>Debt Levels:</strong> High leverage increases financial risk during downturns.</li>
+                    </ul>
+                </div>
+
+                <div class="methodology-card">
+                    <h3>🔄 Screening Workflow</h3>
+                    <p>Our systematic approach to stock selection:</p>
+                    <ol style="margin-left: 20px;">
+                        <li>Select sector and market cap parameters</li>
+                        <li>Filter by valuation metrics (P/E, P/B ratios)</li>
+                        <li>Apply financial health criteria</li>
+                        <li>Review dividend and growth metrics</li>
+                        <li>Assess risk parameters</li>
+                        <li>Shortlist candidates for further analysis</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="disclaimer">
+                <strong>⚠️ Disclaimer:</strong> This stock screener is for educational and informational purposes only. 
+                It should not be considered as investment advice. Past performance does not guarantee future results. 
+                All investments carry risk, including potential loss of principal. Please conduct thorough research and 
+                consult with a qualified financial advisor before making investment decisions.
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <p>&copy; 2025 Stock Screener. All rights reserved. | Data is for informational purposes only.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Sample data for demonstration
+        const sampleStocks = [
+            { ticker: 'AAPL', name: 'Apple Inc.', sector: 'Technology', price: 182.50, market_cap: '2.8T', pe: 28.5, pb: 48.2, dividend: 0.48, roe: 85.6, de: 1.02, change: 4.8 },
+            { ticker: 'MSFT', name: 'Microsoft Corporation', sector: 'Technology', price: 412.75, market_cap: '3.1T', pe: 38.2, pb: 12.5, dividend: 0.68, roe: 42.3, de: 0.45, change: 12.3 },
+            { ticker: 'JNJ', name: 'Johnson & Johnson', sector: 'Healthcare', price: 165.40, market_cap: '440B', pe: 16.2, pb: 7.8, dividend: 2.85, roe: 35.8, de: 0.85, change: -2.5 },
+            { ticker: 'PG', name: 'Procter & Gamble', sector: 'Consumer Discretionary', price: 167.20, market_cap: '395B', pe: 26.4, pb: 6.5, dividend: 2.45, roe: 18.2, de: 1.25, change: 1.2 },
+            { ticker: 'JPM', name: 'JPMorgan Chase', sector: 'Finance', price: 198.65, market_cap: '550B', pe: 12.8, pb: 1.35, dividend: 2.14, roe: 15.3, de: 0.95, change: 8.5 },
+            { ticker: 'XOM', name: 'Exxon Mobil', sector: 'Energy', price: 110.25, market_cap: '460B', pe: 8.5, pb: 1.82, dividend: 3.28, roe: 22.4, de: 0.55, change: 24.7 },
+        ];
+
+        function applyFilters() {
+            const ticker = document.getElementById('ticker').value.toUpperCase();
+            const sector = document.getElementById('sector').value;
+            const peMin = parseFloat(document.getElementById('pe-min').value) || 0;
+            const peMax = parseFloat(document.getElementById('pe-max').value) || Infinity;
+            const pbMin = parseFloat(document.getElementById('pb-min').value) || 0;
+            const pbMax = parseFloat(document.getElementById('pb-max').value) || Infinity;
+            const dividendMin = parseFloat(document.getElementById('dividend-min').value) || 0;
+            const roeMin = parseFloat(document.getElementById('roe-min').value) || 0;
+            const deMax = parseFloat(document.getElementById('debt-max').value) || Infinity;
+
+            let filtered = sampleStocks.filter(stock => {
+                return (ticker === '' || stock.ticker.includes(ticker)) &&
+                       (sector === '' || stock.sector === sector) &&
+                       stock.pe >= peMin && stock.pe <= peMax &&
+                       stock.pb >= pbMin && stock.pb <= pbMax &&
+                       stock.dividend >= dividendMin &&
+                       stock.roe >= roeMin &&
+                       stock.de <= deMax;
+            });
+
+            displayResults(filtered);
+        }
+
+        function displayResults(stocks) {
+            const tbody = document.getElementById('results-body');
+            tbody.innerHTML = '';
+
+            if (stocks.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="11" class="no-results"><p>No stocks match your criteria. Try adjusting your filters.</p></td></tr>';
+                updateStats([]);
+                return;
+            }
+
+            stocks.forEach(stock => {
+                const row = document.createElement('tr');
+                const changeClass = stock.change >= 0 ? 'positive' : 'negative';
+                const changeSign = stock.change >= 0 ? '+' : '';
+
+                row.innerHTML = `
+                    <td><strong>${stock.ticker}</strong></td>
+                    <td>${stock.name}</td>
+                    <td>${stock.sector}</td>
+                    <td>$${stock.price.toFixed(2)}</td>
+                    <td>${stock.market_cap}</td>
+                    <td>${stock.pe.toFixed(2)}</td>
+                    <td>${stock.pb.toFixed(2)}</td>
+                    <td>${stock.dividend.toFixed(2)}%</td>
+                    <td>${stock.roe.toFixed(2)}%</td>
+                    <td>${stock.de.toFixed(2)}</td>
+                    <td class="${changeClass}">${changeSign}${stock.change.toFixed(2)}%</td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            updateStats(stocks);
+        }
+
+        function updateStats(stocks) {
+            document.getElementById('result-count').textContent = stocks.length;
+
+            if (stocks.length === 0) {
+                document.getElementById('avg-pe').textContent = '—';
+                document.getElementById('avg-dividend').textContent = '—';
+                document.getElementById('avg-roe').textContent = '—';
+                return;
+            }
+
+            const avgPe = (stocks.reduce((sum, s) => sum + s.pe, 0) / stocks.length).toFixed(2);
+            const avgDividend = (stocks.reduce((sum, s) => sum + s.dividend, 0) / stocks.length).toFixed(2);
+            const avgRoe = (stocks.reduce((sum, s) => sum + s.roe, 0) / stocks.length).toFixed(2);
+
+            document.getElementById('avg-pe').textContent = avgPe;
+            document.getElementById('avg-dividend').textContent = avgDividend + '%';
+            document.getElementById('avg-roe').textContent = avgRoe + '%';
+        }
+
+        function resetFilters() {
+            document.getElementById('ticker').value = '';
+            document.getElementById('sector').value = '';
+            document.getElementById('pe-min').value = '';
+            document.getElementById('pe-max').value = '';
+            document.getElementById('pb-min').value = '';
+            document.getElementById('pb-max').value = '';
+            document.getElementById('dividend-min').value = '';
+            document.getElementById('roe-min').value = '';
+            document.getElementById('debt-max').value = '';
+            document.getElementById('market-cap').value = '';
+
+            const tbody = document.getElementById('results-body');
+            tbody.innerHTML = '<tr><td colspan="11" class="no-results"><p>👇 Apply filters and click "Search Stocks" to view results</p></td></tr>';
+            updateStats([]);
+        }
+
+        // Allow Enter key to trigger search
+        document.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                applyFilters();
+            }
+        });
+    </script>
+</body>
+</html>
