@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Antigravity Stock Screener | Premium Fundamental Analysis</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <div class="logo-icon">📊</div>
+                <div class="logo-text">STOCK SCREENER</div>
+            </div>
+            <div class="header-actions">
+                <div class="score-badge good">Market: Open</div>
+            </div>
+        </header>
+
+        <!-- Search & Strategies -->
+        <section class="search-section">
+            <h1 style="text-align: center; margin-bottom: 2rem;">Discover Your Next Investment</h1>
+            <div class="search-wrapper">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="search-input" class="search-input" placeholder="Enter stock symbol (e.g. AAPL, MSFT, TSLA)...">
+                <button id="search-btn" class="search-btn">Analyze</button>
+            </div>
+            <div class="strategy-chips">
+                <div class="chip active" data-strategy="value">Value Investing</div>
+                <div class="chip" data-strategy="growth">Growth Investing</div>
+                <div class="chip" data-strategy="dividend">Dividend Growth</div>
+                <div class="chip" data-strategy="quality">High Quality</div>
+                <div class="chip" data-strategy="momentum">Momentum</div>
+                <div class="chip" data-strategy="garp">GARP Style</div>
+            </div>
+        </section>
+
+        <!-- Main Dashboard Content -->
+        <main>
+            <!-- Results Section -->
+            <section id="results-section" class="results-section">
+                <div class="section-header">
+                    <h2 class="section-title">Investment Opportunities</h2>
+                    <span id="results-count" class="results-count">Showing top matches</span>
+                </div>
+                
+                <div id="loading-indicator" class="spinner" style="display: none;"></div>
+                
+                <div id="stocks-grid" class="stocks-grid">
+                    <!-- Stocks will be rendered here -->
+                </div>
+            </section>
+
+            <!-- Rules of Thumb Reference -->
+            <section class="rules-section">
+                <div class="section-header" style="margin-top: 4rem;">
+                    <h2 class="section-title">The 12 Rules of Thumb</h2>
+                </div>
+                <div id="rules-grid" class="rules-grid">
+                    <!-- Rules will be rendered here -->
+                </div>
+            </section>
+        </main>
+
+        <footer style="text-align: center; padding: 4rem 0; color: var(--text-muted); font-size: 0.875rem;">
+            <p>© 2026 Antigravity Stock Screener. For informational purposes only.</p>
+        </footer>
+    </div>
+
+    <!-- Modal for Detailed Evaluation -->
+    <div id="modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Stock Evaluation</h3>
+                <button id="close-modal" class="modal-close">×</button>
+            </div>
+            <div id="modal-body" class="modal-body">
+                <!-- Evaluation details will be rendered here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="static/script.js"></script>
+</body>
+</html>

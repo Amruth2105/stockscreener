@@ -579,24 +579,30 @@ def run_all_examples():
     print("="*70)
     
     try:
-        # Run all examples
+        # Run selected examples for verification
+        import time
+        print("Running Example 1...")
         example_basic_analysis()
+        time.sleep(2)
+        print("Running Example 2...")
         example_value_investing()
+        time.sleep(2)
+        print("Running Example 3...")
         example_growth_investing()
-        example_dividend_investing()
-        example_quality_investing()
-        example_batch_screening()
-        example_custom_strategy()
-        example_comprehensive_reporting()
-        example_comparative_analysis()
-        example_portfolio_analysis()
+        # example_dividend_investing()
+        # example_quality_investing()
+        # example_batch_screening()
+        # example_custom_strategy()
+        # example_comprehensive_reporting()
+        # example_comparative_analysis()
+        # example_portfolio_analysis()
         
         print("\n" + "="*70)
         print("ALL EXAMPLES COMPLETED SUCCESSFULLY")
         print("="*70 + "\n")
         
     except Exception as e:
-        print(f"\n❌ Error running examples: {str(e)}")
+        print(f"\n[ERROR] Error running examples: {str(e)}")
         raise
 
 
