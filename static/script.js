@@ -29,10 +29,45 @@ const elements = {
 
 // Initialize
 async function init() {
+    updateMarketStatus();
     await fetchReferenceData();
     setupEventListeners();
     // Load some initial stocks
     await screenStocks('value');
+}
+
+// Check if US stock market is open (9:30 AM - 4:00 PM ET, Mon-Fri)
+function updateMarketStatus() {
+    const marketStatusEl = document.getElementById('market-status');
+    if (!marketStatusEl) return;
+
+    // Get current time in US Eastern Time
+    const now = new Date();
+    const etOptions = { timeZone: 'America/New_York', hour: 'numeric', minute: 'numeric', hour12: false };
+    const etTime = new Intl.DateTimeFormat('en-US', etOptions).format(now);
+    const [hours, minutes] = etTime.split(':').map(Number);
+    const currentMinutes = hours * 60 + minutes;
+
+    // Market hours: 9:30 AM (570 min) to 4:00 PM (960 min) ET
+    const marketOpen = 9 * 60 + 30;  // 9:30 AM
+    const marketClose = 16 * 60;      // 4:00 PM
+
+    // Get day of week in ET
+    const dayOptions = { timeZone: 'America/New_York', weekday: 'short' };
+    const dayOfWeek = new Intl.DateTimeFormat('en-US', dayOptions).format(now);
+    const isWeekday = !['Sat', 'Sun'].includes(dayOfWeek);
+
+    const isOpen = isWeekday && currentMinutes >= marketOpen && currentMinutes < marketClose;
+
+    if (isOpen) {
+        marketStatusEl.textContent = 'Market: Open';
+        marketStatusEl.classList.add('good');
+        marketStatusEl.classList.remove('warning');
+    } else {
+        marketStatusEl.textContent = 'Market: Closed';
+        marketStatusEl.classList.add('warning');
+        marketStatusEl.classList.remove('good');
+    }
 }
 
 // Fetch constant data from API
