@@ -36,6 +36,7 @@ pip-delete-this-directory.txt
 *.xlsx
 *.xls
 *.json
+!vercel.json
 *.db
 *.sqlite
 *.sqlite3
